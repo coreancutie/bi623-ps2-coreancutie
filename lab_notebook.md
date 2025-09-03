@@ -1,6 +1,5 @@
 # **September 2, 2025**
 
-
 ## Getting files
 
 Here is where I got the SRA of the RNA-seq data 
@@ -43,7 +42,7 @@ This popped up.... I just hit yes and continued
 Activating the enviroment
     mamba activate QAA
 
-## Installing Packages
+## Installing Packages Part 1
 
 ### sra-tools
 
@@ -218,3 +217,27 @@ I am running all 4 in one script so I gave myself 5 hours (hopefully it works)
 
     sbatch ./demultiplex_part1_script.sh 
 
+## Installing Packages Part 2
+
+### Cutadapt
+
+    mamba install cutadapt
+    cutadapt --version (should be 5.0)
+    5.1 
+
+Looks like my version is slightly newer, if there are no problems I will continue with this version
+
+### Trimmomatic
+
+    mamba install trimmomatic
+    trimmomatic -version (should be 0.39)
+    0.40
+
+Looks like my version is slightly newer, if there are no problems I will continue with this version
+
+
+## Trim adapter sequences (Cutadapt)
+
+
+
+```USE conda install picard=2.18```
