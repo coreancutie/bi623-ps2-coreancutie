@@ -190,15 +190,31 @@ Unzip the files
     unzip SRR25630378_1_fastqc.zip --> SRR25630378_1_fastqc/
     unzip SRR25630378_2_fastqc.zip --> SRR25630378_2_fastqc/
 
+## Looking at fastqc graphs
+
+Comment on whether or not they are consistent with the quality score plots.
+
+    -per-base quality score distributions for R1 and R2 reads
+    All of the scores look really good! All in the 30's and gradually get worse towards the end as expected due to degredation. 
+
+    -per-base N content for R1 and R2 reads
+    Looks AMAZING! The N content is so small it looks like its 0 the entire way through. No warrnings (N > 5%) or errors (N > 20%) given :)
+
 ## Running demultiplexing part 1 script
 
 Coppied the script into this directory and called it demultiplex_part1_script.py I added an output parameter so the name of the output images could be named beforehand
 
 To run the script I made the bash script called demultiplex_part1_script.sh (its the same base code as in Bi621)
 
-### Installing for demultiplex
+### Installs for demultiplex script
 
     mamba install numpy
     mamba install gzip
     mamba install matplotlib
+
+### Running demultiplexing script
+
+I am running all 4 in one script so I gave myself 5 hours (hopefully it works)
+
+    sbatch ./demultiplex_part1_script.sh 
 
