@@ -3,19 +3,31 @@
 
 ## Getting files
 
-2 RNA-seq files data from NCBI SRA, dumping into FASTQ files, and zipping those files.
+Here is where I got the SRA of the RNA-seq data 
 
     cat /projects/bgmp/shared/Bi623/PS2/QAA_data_Assignments.txt
 
-    SRR25630300     Catie
+RNA-seq files is SRR25630300 and SRR25630378
+
+    SRR25630300
+    SRR25630378
+
+I prefetched them (.sra file) data from NCBI SRA
 
     prefetch SRR25630300
-    fasterq-dump SRR25630300
-
-    SRR25630378     Catie
-    
     prefetch SRR25630378
+
+I turned them into fastq files (dumping into FASTQ files)
+
+    fasterq-dump SRR25630300
     fasterq-dump SRR25630378
+
+I zipped the files (each command took almost an hour....)
+
+    gzip SRR25630300_1.fastq SRR25630300_2.fastq  --> SRR25630300_1.fastq.gz SRR25630300_2.fastq.gz
+    gzip SRR25630378_1.fastq SRR25630378_2.fastq  --> SRR25630378_1.fastq.gz SRR25630378_2.fastq.gz
+ 
+
 
 ## Making Conda Enviroment
 
