@@ -27,14 +27,12 @@ I zipped the files (each command took almost an hour....)
     gzip SRR25630300_1.fastq SRR25630300_2.fastq  --> SRR25630300_1.fastq.gz SRR25630300_2.fastq.gz
     gzip SRR25630378_1.fastq SRR25630378_2.fastq  --> SRR25630378_1.fastq.gz SRR25630378_2.fastq.gz
  
-
-
 ## Making Conda Enviroment
 
     conda create --QAA
 
 This popped up.... I just hit yes and continued 
-    
+
     WARNING: A conda environment already exists at '/gpfs/home/catcar/miniforge3/envs/QAA'
 
     Remove existing environment?
@@ -42,9 +40,12 @@ This popped up.... I just hit yes and continued
 
      (y/[n])? y 
 
+Activating the enviroment
+    mamba activate QAA
+
 ## Installing Packages
 
-## sra-tools
+### sra-tools
 
     mamba install sra-tools
 
@@ -68,4 +69,23 @@ This popped up.... I just hit yes and continued
 
     trimmomatic -version
     0.40
+
+## Running fastqc
+
+    fastqc SRR25630300_1_fastq.zip 
+    fastqc SRR25630300_2_fastq.zip
+
+The files created were:
+
+    SRR25630300_1_fastqc.html
+    SRR25630300_1_fastqc.zip
+
+    SRR25630300_2_fastqc.html
+    SRR25630300_2_fastqc.zip
+
+Unzip the files
+
+    unzip SRR25630300_1_fastqc.zip --> SRR25630300_1_fastqc
+
+    unzip SRR25630300_2_fastqc.zip --> SRR25630300_2_fastqc
 
