@@ -244,12 +244,20 @@ R2: `AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT`
 
 For paired-end reads SRR25630300:
 
-    /usr/bin/time -v cutadapt -a AGATCGGAAGAGCACACGTCTGAACTCCAGTCA -A AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT -o SRR25630300_1_out.fastq -p SRR25630300_2_out.fastq /projects/bgmp/catcar/bioinfo/Bi623/PS/bi623-ps2-coreancutie/SRR25630300_1/SRR25630300_1.fastq.gz /projects/bgmp/catcar/bioinfo/Bi623/PS/bi623-ps2-coreancutie/SRR25630300_2/SRR25630300_2.fastq.gz
+    /usr/bin/time -v cutadapt -a AGATCGGAAGAGCACACGTCTGAACTCCAGTCA -A AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT -o SRR25630300_1_out.fastq -p SRR25630300_2_out.fastq /projects/bgmp/catcar/bioinfo/Bi623/PS/bi623-ps2-coreancutie/part1/SRR25630300_1/SRR25630300_1.fastq.gz /projects/bgmp/catcar/bioinfo/Bi623/PS/bi623-ps2-coreancutie/part1/SRR25630300_2/SRR25630300_2.fastq.gz
 
     User time (seconds): 228.12
     System time (seconds): 6.38
     Percent of CPU this job got: 98%
     Elapsed (wall clock) time (h:mm:ss or m:ss): 3:56.95
+
+    === Summary ===
+
+    Total read pairs processed:         42,812,603
+    Read 1 with adapter:               2,137,174 (5.0%)
+    Read 2 with adapter:               2,433,652 (5.7%)
+    Pairs written (passing filters):    42,812,603 (100.0%)
+
 
 For paired-end reads SRR25630378:
 
@@ -259,6 +267,13 @@ For paired-end reads SRR25630378:
     System time (seconds): 0.61
     Percent of CPU this job got: 94%
     Elapsed (wall clock) time (h:mm:ss or m:ss): 0:31.29
+
+    === Summary ===
+
+    Total read pairs processed:          4,764,351
+    Read 1 with adapter:                 513,964 (10.8%)
+    Read 2 with adapter:                 543,582 (11.4%)
+    Pairs written (passing filters):     4,764,351 (100.0%)
 
 ## Quality trim reads
 
@@ -313,5 +328,61 @@ Pair ended for SRR25630378:
 	Percent of CPU this job got: 319%
 	Elapsed (wall clock) time (h:mm:ss or m:ss): 1:36.03
 
+## Plotting trimmed reads
 
-```USE conda install picard=2.18```
+Get the sequence:`sed -n '2~4p'`
+
+Get the length: `awk '{print length($0)}'`
+
+Get the distribution of lengths: `sort -n | uniq -c`
+
+
+    zcat SRR25630300_1_paired.fastq.gz | sed -n '2~4p' | awk '{print length($0)}' | sort -n | uniq -c > SRR25630300_1_paired_distribution.tsv
+
+
+    zcat SRR25630300_2_paired.fastq.gz | sed -n '2~4p' | awk '{print length($0)}' | sort -n | uniq -c > SRR25630300_2_paired_distribution.tsv
+
+    zcat SRR25630378_1_paired.fastq.gz | sed -n '2~4p' | awk '{print length($0)}' | sort -n | uniq -c > SRR25630378_1_paired_distribution.tsv
+
+    zcat SRR25630378_2_paired.fastq.gz | sed -n '2~4p' | awk '{print length($0)}' | sort -n | uniq -c > SRR25630378_2_paired_distribution.tsv
+
+
+    ./part2_plot.py -f1 /projects/bgmp/catcar/bioinfo/Bi623/PS/bi623-ps2-coreancutie/part2/SRR25630300_1/SRR25630300_1_paired_distribution.tsv -f2 /projects/bgmp/catcar/bioinfo/Bi623/PS/bi623-ps2-coreancutie/part2/SRR25630300_2/SRR25630300_2_paired_distribution.tsv -o SRR25630300_paired_distribution
+
+    ./part2_plot.py -f1 /projects/bgmp/catcar/bioinfo/Bi623/PS/bi623-ps2-coreancutie/part2/SRR25630378_1/SRR25630378_1_paired_distribution.tsv -f2 /projects/bgmp/catcar/bioinfo/Bi623/PS/bi623-ps2-coreancutie/part2/SRR25630378_2/SRR25630378_2_paired_distribution.tsv -o SRR25630378_paired_distribution
+
+## Installing Packages Part 3
+
+### Star
+
+    conda install star
+
+### Picard
+    
+    conda install picard=2.18
+
+### Samtools
+
+    conda install samtools
+
+### NumPy
+
+    conda install numpy
+
+### Matplotlib
+
+    conda install matplotlib
+
+### HTSeq
+
+    conda install HTSeq
+
+## Getting Campylomormyrus compressirostris
+
+My download failed with wget :(
+
+Copying the file from talapas
+
+    cp /projects/bgmp/shared/Bi623/PS2/campylomormyrus.fasta .
+    cp /projects/bgmp/shared/Bi623/PS2/campylomormyrus.gff .
+
