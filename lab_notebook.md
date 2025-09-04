@@ -238,6 +238,80 @@ Looks like my version is slightly newer, if there are no problems I will continu
 
 ## Trim adapter sequences (Cutadapt)
 
+R1: `AGATCGGAAGAGCACACGTCTGAACTCCAGTCA`
+    
+R2: `AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT`
+
+For paired-end reads SRR25630300:
+
+    /usr/bin/time -v cutadapt -a AGATCGGAAGAGCACACGTCTGAACTCCAGTCA -A AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT -o SRR25630300_1_out.fastq -p SRR25630300_2_out.fastq /projects/bgmp/catcar/bioinfo/Bi623/PS/bi623-ps2-coreancutie/SRR25630300_1/SRR25630300_1.fastq.gz /projects/bgmp/catcar/bioinfo/Bi623/PS/bi623-ps2-coreancutie/SRR25630300_2/SRR25630300_2.fastq.gz
+
+    User time (seconds): 228.12
+    System time (seconds): 6.38
+    Percent of CPU this job got: 98%
+    Elapsed (wall clock) time (h:mm:ss or m:ss): 3:56.95
+
+For paired-end reads SRR25630378:
+
+    /usr/bin/time -v cutadapt -a AGATCGGAAGAGCACACGTCTGAACTCCAGTCA -A AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT -o SRR25630378_1_out.fastq -p SRR25630378_2_out.fastq /projects/bgmp/catcar/bioinfo/Bi623/PS/bi623-ps2-coreancutie/SRR25630378_1/SRR25630378_1.fastq.gz /projects/bgmp/catcar/bioinfo/Bi623/PS/bi623-ps2-coreancutie/SRR25630378_2/SRR25630378_2.fastq.gz
+
+    User time (seconds): 28.90
+    System time (seconds): 0.61
+    Percent of CPU this job got: 94%
+    Elapsed (wall clock) time (h:mm:ss or m:ss): 0:31.29
+
+## Quality trim reads
+
+`Trimmomatic` with these paramaters:
+    - HEADCROP: 8 bases 
+    - LEADING: quality of 3
+    - TRAILING: quality of 3
+    - SLIDING WINDOW: window size of 5 and required quality of 15
+    - MINLENGTH: 35 bases
+
+I made a bash script to sbatch this. It's called trimmomatic_script.sh
+
+
+Pair ended for SRR25630300: 
+
+    /usr/bin/time -v trimmomatic PE \
+    /projects/bgmp/catcar/bioinfo/Bi623/PS/bi623-ps2-coreancutie/SRR25630300_1_out.fastq \
+    /projects/bgmp/catcar/bioinfo/Bi623/PS/bi623-ps2-coreancutie/SRR25630300_2_out.fastq \
+    SRR25630300_1_paired.fastq.gz \
+    SRR25630300_1_unpaired.fastq.gz \
+    SRR25630300_2_paired.fastq.gz \
+    SRR25630300_2_unpaired.fastq.gz \
+    HEADCROP:8 \
+    LEADING:3 \
+    TRAILING:3 \
+    SLIDINGWINDOW:5:15 \
+    MINLEN:35
+
+    User time (seconds): 2725.58
+	System time (seconds): 20.49
+	Percent of CPU this job got: 329%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 13:52.86
+
+
+Pair ended for SRR25630378:
+
+    /usr/bin/time -v trimmomatic PE \
+    /projects/bgmp/catcar/bioinfo/Bi623/PS/bi623-ps2-coreancutie/SRR25630378_1_out.fastq \
+    /projects/bgmp/catcar/bioinfo/Bi623/PS/bi623-ps2-coreancutie/SRR25630378_2_out.fastq \
+    SRR25630378_1_paired.fastq.gz \
+    SRR25630378_1_unpaired.fastq.gz \
+    SRR25630378_2_paired.fastq.gz \
+    SRR25630378_2_unpaired.fastq.gz \
+    HEADCROP:8 \
+    LEADING:3 \
+    TRAILING:3 \
+    SLIDINGWINDOW:5:15 \
+    MINLEN:35
+
+    User time (seconds): 303.83
+	System time (seconds): 2.76
+	Percent of CPU this job got: 319%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 1:36.03
 
 
 ```USE conda install picard=2.18```
