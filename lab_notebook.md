@@ -351,11 +351,14 @@ Get the distribution of lengths: `sort -n | uniq -c`
 
     ./part2_plot.py -f1 /projects/bgmp/catcar/bioinfo/Bi623/PS/bi623-ps2-coreancutie/part2/SRR25630378_1/SRR25630378_1_paired_distribution.tsv -f2 /projects/bgmp/catcar/bioinfo/Bi623/PS/bi623-ps2-coreancutie/part2/SRR25630378_2/SRR25630378_2_paired_distribution.tsv -o SRR25630378_paired_distribution
 
+# **September 4, 2025**
+
 ## Installing Packages Part 3
 
 ### Star
 
     conda install star
+    conda install bioconda::star
 
 ### Picard
     
@@ -364,6 +367,7 @@ Get the distribution of lengths: `sort -n | uniq -c`
 ### Samtools
 
     conda install samtools
+    conda install bioconda::samtools
 
 ### NumPy
 
@@ -377,7 +381,11 @@ Get the distribution of lengths: `sort -n | uniq -c`
 
     conda install HTSeq
 
-## Getting Campylomormyrus compressirostris
+### gffread
+
+    conda install bioconda::gffread
+
+## Getting Campylomormyrus compressirostris files
 
 My download failed with wget :(
 
@@ -386,3 +394,136 @@ Copying the file from talapas
     cp /projects/bgmp/shared/Bi623/PS2/campylomormyrus.fasta .
     cp /projects/bgmp/shared/Bi623/PS2/campylomormyrus.gff .
 
+
+## Running STAR for Alignment 
+
+### Changing gff to gtf file format
+
+    gffread -E /projects/bgmp/catcar/bioinfo/Bi623/PS/bi623-ps2-coreancutie/campylomormyrus.gff -T -o campylomormyrus.gtf
+
+### STAR database
+
+Made a bash script called star_database.sh
+
+    /usr/bin/time -v STAR \
+    --runThreadN 8 \
+    --runMode genomeGenerate \
+    --genomeDir /projects/bgmp/catcar/bioinfo/Bi623/PS/bi623-ps2-coreancutie/part3/campylomormyrus \
+    --genomeFastaFiles /projects/bgmp/catcar/bioinfo/Bi623/PS/bi623-ps2-coreancutie/part3/campylomormyrus.fasta \
+    --sjdbGTFfile /projects/bgmp/catcar/bioinfo/Bi623/PS/bi623-ps2-coreancutie/part3/campylomormyrus.gtf
+
+
+    User time (seconds): 1758.05
+	System time (seconds): 24.77
+	Percent of CPU this job got: 397%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 7:28.56
+
+### STAR reads
+
+Made a bash script called star_alignreads.sh
+
+    /usr/bin/time -v STAR \
+    --runThreadN 8 \
+    --runMode alignReads \
+    --outFilterMultimapNmax 3 \
+    --outSAMunmapped Within KeepPairs \
+    --alignIntronMax 1000000 \
+    --alignMatesGapMax 1000000 \
+    --readFilesCommand zcat \
+    --readFilesIn /projects/bgmp/catcar/bioinfo/Bi623/PS/bi623-ps2-coreancutie/part2/SRR25630300_1/SRR25630300_1_paired.fastq.gz \
+    /projects/bgmp/catcar/bioinfo/Bi623/PS/bi623-ps2-coreancutie/part2/SRR25630300_2/SRR25630300_2_paired.fastq.gz \
+    --genomeDir /projects/bgmp/catcar/bioinfo/Bi623/PS/bi623-ps2-coreancutie/part3/campylomormyrus_database \
+    --outFileNamePrefix SRR25630300_alignreads_
+
+	User time (seconds): 5541.82
+	System time (seconds): 19.18
+	Percent of CPU this job got: 778%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 11:54.03
+
+
+    /usr/bin/time -v STAR \
+    --runThreadN 8 \
+    --runMode alignReads \
+    --outFilterMultimapNmax 3 \
+    --outSAMunmapped Within KeepPairs \
+    --alignIntronMax 1000000 \
+    --alignMatesGapMax 1000000 \
+    --readFilesCommand zcat \
+    --readFilesIn /projects/bgmp/catcar/bioinfo/Bi623/PS/bi623-ps2-coreancutie/part2/SRR25630378_1/SRR25630378_1_paired.fastq.gz \
+    /projects/bgmp/catcar/bioinfo/Bi623/PS/bi623-ps2-coreancutie/part2/SRR25630378_2/SRR25630378_2_paired.fastq.gz \
+    --genomeDir /projects/bgmp/catcar/bioinfo/Bi623/PS/bi623-ps2-coreancutie/part3/campylomormyrus_database \
+    --outFileNamePrefix SRR25630378_alignreads_
+
+    User time (seconds): 1034.80
+	System time (seconds): 5.78
+	Percent of CPU this job got: 734%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 2:21.59
+
+## Getting rid of duplicates
+
+### Sorting using Samtools
+
+This sorts by the reads and also converts the output into a bam file
+
+    samtools sort -o SRR25630300_alignreads_Aligned_sorted.out.bam SRR25630300_alignreads_Aligned.out.sam
+
+    samtools sort -o SRR25630378_alignreads_Aligned_sorted.out.bam SRR25630378_alignreads_Aligned.out.sam
+
+
+### Running Picard
+
+Made a bash script called "picard.sh"
+
+    /usr/bin/time -v picard MarkDuplicates \
+    INPUT=/projects/bgmp/catcar/bioinfo/Bi623/PS/bi623-ps2-coreancutie/part3/SRR25630300_alignreads_Aligned_sorted.out.bam \
+    OUTPUT=SRR25630300_markdup.bam \
+    METRICS_FILE=SRR25630300_markdup_metrics.txt \
+    REMOVE_DUPLICATES=TRUE \
+    VALIDATION_STRINGENCY=LENIENT
+
+    User time (seconds): 609.90
+	System time (seconds): 6.72
+	Percent of CPU this job got: 116%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 8:48.90
+
+    /usr/bin/time -v picard MarkDuplicates \
+    INPUT=/projects/bgmp/catcar/bioinfo/Bi623/PS/bi623-ps2-coreancutie/part3/SRR25630378_alignreads_Aligned_sorted.out.bam \
+    OUTPUT=SRR25630378_markdup.bam \
+    METRICS_FILE=SRR25630378_markdup_metrics.txt \
+    REMOVE_DUPLICATES=TRUE \
+    VALIDATION_STRINGENCY=LENIENT
+
+    User time (seconds): 94.99
+	System time (seconds): 1.16
+	Percent of CPU this job got: 118%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 1:21.19
+
+
+## Counting Duplicates
+
+### Converting Bam to Sam
+
+I need to convert the BAM file output that picard gave me to SAM
+
+    samtools view /projects/bgmp/catcar/bioinfo/Bi623/PS/bi623-ps2-coreancutie/part3/SRR25630300/SRR25630300_markdup.bam > SRR25630300_markdup.sam
+
+    samtools view /projects/bgmp/catcar/bioinfo/Bi623/PS/bi623-ps2-coreancutie/part3/SRR25630378/SRR25630378_markdup.bam > SRR25630378_markdup.sam
+
+### Counting Mapped and Unmapped reads
+
+I made a python scriped called mapped_unmapped_reads.py
+This is the same code from my PS8.py script in Bi621 
+
+    ./mapped_unmapped_reads.py -f /projects/bgmp/catcar/bioinfo/Bi623/PS/bi623-ps2-coreancutie/part3/SRR25630300/SRR25630300_markdup.sam -o SRR25630300_counts.txt
+
+    ./mapped_unmapped_reads.py -f /projects/bgmp/catcar/bioinfo/Bi623/PS/bi623-ps2-coreancutie/part3/SRR25630378/SRR25630378_markdup.sam -o SRR25630378_counts.txt
+
+## Running htseq-count
+
+4 runs total
+
+--stranded=yes
+
+--stranded=reverse
+
+    htseq-count
