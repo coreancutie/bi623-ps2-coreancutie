@@ -522,8 +522,90 @@ This is the same code from my PS8.py script in Bi621
 
 4 runs total
 
---stranded=yes
+    /usr/bin/time -v htseq-count --stranded=yes --i gene_id /projects/bgmp/catcar/bioinfo/Bi623/PS/bi623-ps2-coreancutie/part3/SRR25630300/SRR25630300_markdup.bam /projects/bgmp/catcar/bioinfo/Bi623/PS/bi623-ps2-coreancutie/part3/campylomormyrus.gtf > SRR25630300_htseq_counts.tsv
 
---stranded=reverse
+    User time (seconds): 724.10
+	System time (seconds): 0.71
+	Percent of CPU this job got: 99%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 12:11.52
 
-    htseq-count
+    /usr/bin/time -v htseq-count --stranded=reverse --i gene_id /projects/bgmp/catcar/bioinfo/Bi623/PS/bi623-ps2-coreancutie/part3/SRR25630300/SRR25630300_markdup.bam /projects/bgmp/catcar/bioinfo/Bi623/PS/bi623-ps2-coreancutie/part3/campylomormyrus.gtf > SRR25630300_htseq_counts.tsv
+
+    User time (seconds): 734.97
+	System time (seconds): 0.70
+	Percent of CPU this job got: 99%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 12:20.54
+
+    /usr/bin/time -v htseq-count --stranded=yes --i gene_id /projects/bgmp/catcar/bioinfo/Bi623/PS/bi623-ps2-coreancutie/part3/SRR25630378/SRR25630378_markdup.bam /projects/bgmp/catcar/bioinfo/Bi623/PS/bi623-ps2-coreancutie/part3/campylomormyrus.gtf > SRR25630378_htseq_counts.tsv
+
+    User time (seconds): 160.69
+	System time (seconds): 0.34
+	Percent of CPU this job got: 99%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 2:42.45
+
+    /usr/bin/time -v htseq-count --stranded=reverse --i gene_id /projects/bgmp/catcar/bioinfo/Bi623/PS/bi623-ps2-coreancutie/part3/SRR25630378/SRR25630378_markdup.bam /projects/bgmp/catcar/bioinfo/Bi623/PS/bi623-ps2-coreancutie/part3/campylomormyrus.gtf > SRR25630378_htseq_counts.tsv
+
+    User time (seconds): 164.99
+	System time (seconds): 0.35
+	Percent of CPU this job got: 99%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 2:45.66
+
+## Strandedness
+
+#### SRR25630300 Stranded
+
+This finds the number of reads mapped
+    cat SRR25630300_htseq_counts_stranded.tsv | grep -v "^__" | awk '{x+=$2} END{print(x)}'
+    633155
+
+This finds the total number of reads
+    awk '{x+=$2} END{print(x)}' SRR25630300_htseq_counts_stranded.tsv
+    26415203
+
+This is the percent of reads mapped
+    (633155/26415203)*100 = 2.396% are mapped/stranded
+
+#### SRR25630300 Unstranded
+
+This finds the number of reads unmapped
+    cat SRR25630300_htseq_counts_reverse.tsv | grep -v "^__" | awk '{x+=$2} END{print(x)}'
+
+    14461784
+
+This finds the total number of reads
+    awk '{x+=$2} END{print(x)}' SRR25630300_htseq_counts_reverse.tsv
+
+    26415203
+
+This is the percent of reads unmapped
+    (14461784/26415203)*100 = 54.748%
+
+#### SRR25630378 Stranded
+
+This finds the number of reads mapped
+    cat SRR25630378_htseq_counts_stranded.tsv | grep -v "^__" | awk '{x+=$2} END{print(x)}'
+    
+    144239
+
+This finds the total number of reads
+    awk '{x+=$2} END{print(x)}' SRR25630378_htseq_counts_stranded.tsv
+
+    5753939
+
+This is the percent of reads mapped
+    (144239/5753939)*100 = 2.507%
+
+#### SRR25630378 Unstranded
+
+This finds the number of reads unmapped
+    cat SRR25630378_htseq_counts_reverse.tsv | grep -v "^__" | awk '{x+=$2} END{print(x)}'
+
+    3004550
+
+This finds the total number of reads
+    awk '{x+=$2} END{print(x)}' SRR25630378_htseq_counts_reverse.tsv
+
+    5753939
+
+This is the percent of reads unmapped
+    (3004550/5753939)*100 = 52.217%
