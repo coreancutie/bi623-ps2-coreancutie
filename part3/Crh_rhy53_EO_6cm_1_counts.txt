@@ -1,0 +1,2 @@
+The number of reads that are properly mapped to the reference genome are: 23027782
+The number of reads that are not properly mapped to the reference genome are: 7397353
